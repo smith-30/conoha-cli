@@ -5,7 +5,11 @@
 
 ### conoha-cli
 
-bind ffprobe command to golang.
+conoha-cli created by go.
+
+### Thanks
+
+https://mholt.github.io/json-to-go/
 
 ### License
 

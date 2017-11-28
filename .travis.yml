@@ -1,0 +1,34 @@
+language: go
+sudo: false
+go:
+  - 1.8
+  - 1.9
+  - tip
+
+matrix:
+  allow_failures:
+    - go: tip
+
+install:
+  - go get golang.org/x/tools/cmd/cover
+  - go get github.com/modocache/gover
+  - go get github.com/mattn/goveralls
+  - go get honnef.co/go/tools/cmd/gosimple
+  - go get honnef.co/go/tools/cmd/unused
+  - go get honnef.co/go/tools/cmd/staticcheck
+  - go get -v -t ./...
+
+script:
+  - go vet $(go list ./... | grep -v /vendor/)
+  - unused $(go list ./... | grep -v /vendor/)
+  - gosimple $(go list ./... | grep -v /vendor/)
+  - staticcheck $(go list ./... | grep -v /vendor/)
+  - go test -cover -coverpkg github.com/smith-30/conoha-cli -coverprofile conoha-cli.coverprofile
+
+after_script:
+  - gover
+  - goveralls -coverprofile=gover.coverprofile -repotoken $COVERALLS_TOKEN
+
+env:
+  global:
+    secure: YNWT5e+svREOTj37e7j4j+k2pWwlr75owaN0Ip0gQwwsdIPx3WS530Z5Awt2DO31pscfCsJS+nr7lSHZjyNKshVMyyE/d21b23Akr6WeI6i/Xt7OugwyJPBr+rahItRpO2eL0s3QlS8WMqWRWI/n/p0rxLR8EIL4wqUfi/IY32ZYYXXZtSDgsGxB+zfnID5KdblAGnzSSatqXgKXLOPmm2XR8AxuAWNEK38uYU5kpLvI9O7qrB9aQm1iy31v+bRrQhZYDtmhIuLzHsqpJZwqfTsHXwSbUuCpw1O3FnYcvrGjo/NArXnyg+OzGtDzRNo+SR9+XI6V7C2wqSJZqaIDnhzbZQeF5Q9xvSFHqgABbGCOtUtrqsbYnHn2mbWisRTzNU2K/EuT3lAUuKM0wi7GgBgrzbly93VRAB/DWZiA/E4xq0wHpMlD0Nz5UtqpoyiTWiQZGGDhALOWLIhl8r935FuZSTJemcsEsCqdyUHtsl3QY50yetfFBJyY1BsUWfgG96cKPupE5W66FiZ14HpkhlczWz+K8Ji+k5KjO5bvLThYR0Hq51Tu1n3WhkBDNMuyju63IUpivSweEx5JNqu77Da6bHVosjVvOt1yEjRbqoXzwmPoxZN9SxdJXIv7ARbtz66X2Wl9eOgDFtCkMJtLXyTIgTQ9MKI8tysusv5zQwo=

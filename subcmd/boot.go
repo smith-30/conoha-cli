@@ -28,7 +28,7 @@ func (f *Boot) Run(args []string) int {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	r, err := cc.Auth(ctx, "tokens")
+	r, err := cc.Auth(ctx)
 	if err != nil {
 		logger.Sugar().Fatalf("%v", err)
 		return 1
@@ -36,11 +36,11 @@ func (f *Boot) Run(args []string) int {
 
 	logger.Sugar().Infof("%v", r.Access.Token)
 
-	//res, err := cc.Boot()
-	//if err != nil {
-	//	logger.Sugar().Fatalf("%v", err)
-	//	return 1
-	//}
+	res, err := cc.Boot()
+	if err != nil {
+		logger.Sugar().Fatalf("%v", err)
+		return 1
+	}
 
 	return 0
 }

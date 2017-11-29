@@ -14,6 +14,12 @@
   version = "v0.1.0"
 
 [[projects]]
+  name = "github.com/carlescere/scheduler"
+  packages = ["."]
+  revision = "ddcf6a6be3e8bd4b480f96031d9e1f3abecf2767"
+  version = "0.1"
+
+[[projects]]
   branch = "master"
   name = "github.com/hashicorp/errwrap"
   packages = ["."]
@@ -82,6 +88,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "943f1ca21e03e6398ed2a59be01c9f05026f611512389a3a830552c1c3a6d6e8"
+  inputs-digest = "93e7bff62d14ed824544970e810748d91638c7da64374a3ab988f550164502a4"
   solver-name = "gps-cdcl"
   solver-version = 1

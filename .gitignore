@@ -25,5 +25,6 @@ Thumbs.db
 # Project
 .env
 vendor/
-conoha-cli
+/build/bin/*
+!/build/bin/.gitkeep
 

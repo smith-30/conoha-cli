@@ -10,7 +10,6 @@ import (
 	"go.uber.org/zap"
 )
 
-/** foo サブコマンド用の実装 **/
 type Boot struct{}
 
 func (f *Boot) Help() string {

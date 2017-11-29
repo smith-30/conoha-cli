@@ -24,6 +24,9 @@ func main() {
 		"boot": func() (cli.Command, error) {
 			return &subcmd.Boot{}, nil
 		},
+		"halt": func() (cli.Command, error) {
+			return &subcmd.Halt{}, nil
+		},
 	}
 
 	exitStatus, err := c.Run()

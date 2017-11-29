@@ -7,6 +7,11 @@
 
 conoha-cli created by go.
 
+__implement__
+
+- boot
+- halt
+
 ### Thanks
 
 https://mholt.github.io/json-to-go/

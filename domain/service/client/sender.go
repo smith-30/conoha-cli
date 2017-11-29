@@ -11,10 +11,7 @@ import (
 
 	"os"
 
-	"bytes"
-
 	"github.com/pkg/errors"
-	"github.com/smith-30/conoha-cli/domain/model"
 	"go.uber.org/zap"
 )
 
@@ -25,7 +22,8 @@ const (
 
 type (
 	ConohaClient struct {
-		URL        *url.URL
+		AuthURL    *url.URL
+		ApiURL     *url.URL
 		HTTPClient *http.Client
 
 		UserName string
@@ -39,14 +37,21 @@ type (
 )
 
 func NewConohaClient(l *zap.Logger) (*ConohaClient, error) {
-	u := os.Getenv("API_HOST")
-	parsedURL, err := url.ParseRequestURI(u)
+	aah := os.Getenv("API_AUTH_HOST")
+	authParsed, err := url.ParseRequestURI(aah)
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed to parse url: %s", u)
+		return nil, errors.Wrapf(err, "failed to parse url: %s", aah)
+	}
+
+	ah := os.Getenv("API_HOST")
+	apiParsed, err := url.ParseRequestURI(ah)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to parse url: %s", ah)
 	}
 
 	return &ConohaClient{
-		URL:        parsedURL,
+		AuthURL:    authParsed,
+		ApiURL:     apiParsed,
 		HTTPClient: &http.Client{},
 
 		UserName: os.Getenv("API_USER"),
@@ -59,37 +64,16 @@ func NewConohaClient(l *zap.Logger) (*ConohaClient, error) {
 	}, nil
 }
 
-func (c *ConohaClient) Auth(ctx context.Context) (*model.AuthRes, error) {
-	path := "tokens"
+func (c *ConohaClient) newRequest(ctx context.Context, method, spath string, body io.Reader, isAuth bool) (*http.Request, error) {
+	var u url.URL
 
-	ar := model.NewAuthReq(c.UserName, c.Password, c.TenantID)
-	body, err := json.Marshal(ar)
-	if err != nil {
-		return nil, err
+	if isAuth {
+		u = *c.AuthURL
+		u.Path = path.Join(c.AuthURL.Path, spath)
+	} else {
+		u = *c.ApiURL
+		u.Path = path.Join(c.ApiURL.Path, spath)
 	}
-
-	req, err := c.newRequest(ctx, POST, path, bytes.NewReader(body))
-	if err != nil {
-		return nil, err
-	}
-
-	res, err := c.HTTPClient.Do(req)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed HTTPClient.Do")
-	}
-
-	// Check status code here…
-	var r model.AuthRes
-	if err := decodeBody(res, &r); err != nil {
-		return nil, errors.Wrapf(err, "failed decode %v", res)
-	}
-
-	return &r, nil
-}
-
-func (c *ConohaClient) newRequest(ctx context.Context, method, spath string, body io.Reader) (*http.Request, error) {
-	u := *c.URL
-	u.Path = path.Join(c.URL.Path, spath)
 
 	req, err := http.NewRequest(method, u.String(), body)
 	if err != nil {
@@ -101,24 +85,6 @@ func (c *ConohaClient) newRequest(ctx context.Context, method, spath string, bod
 	req.Header.Set("Content-Type", "application/json")
 
 	return req, nil
-}
-
-func (c *ConohaClient) Boot(ctx context.Context, method, spath string, body io.Reader) error {
-	path :=
-
-	u := *c.URL
-	u.Path = path.Join(c.URL.Path, spath)
-
-	req, err := http.NewRequest(POST, u.String(), body)
-	if err != nil {
-		return err
-	}
-
-	req = req.WithContext(ctx)
-
-	req.Header.Set("Content-Type", "application/json")
-
-	return nil
 }
 
 func decodeBody(resp *http.Response, out interface{}) error {

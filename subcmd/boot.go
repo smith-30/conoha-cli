@@ -14,7 +14,7 @@ import (
 type Boot struct{}
 
 func (f *Boot) Help() string {
-	return "app foo"
+	return "conoha-cli"
 }
 
 func (f *Boot) Run(args []string) int {
@@ -22,23 +22,22 @@ func (f *Boot) Run(args []string) int {
 
 	cc, err := client.NewConohaClient(logger)
 	if err != nil {
-		logger.Sugar().Fatalf("%v", err)
+		logger.Sugar().Fatalf("%v\n", err)
 		return 1
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
+
 	r, err := cc.Auth(ctx)
 	if err != nil {
-		logger.Sugar().Fatalf("%v", err)
+		logger.Sugar().Fatalf("%v\n", err)
 		return 1
 	}
 
-	logger.Sugar().Infof("%v", r.Access.Token)
-
-	res, err := cc.Boot()
+	err = cc.Boot(ctx, r)
 	if err != nil {
-		logger.Sugar().Fatalf("%v", err)
+		logger.Sugar().Fatalf("%v\n", err)
 		return 1
 	}
 
@@ -46,5 +45,5 @@ func (f *Boot) Run(args []string) int {
 }
 
 func (f *Boot) Synopsis() string {
-	return "Print \"Foo!\""
+	return "conoha-cli"
 }

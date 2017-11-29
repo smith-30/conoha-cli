@@ -43,3 +43,7 @@ type (
 		} `json:"access"`
 	}
 )
+
+func (ar *AuthRes) GetToken() string {
+	return ar.Access.Token.ID
+}

@@ -8,6 +8,6 @@ type (
 
 func NewBoot() *Boot {
 	return &Boot{
-		nil,
+		"",
 	}
 }

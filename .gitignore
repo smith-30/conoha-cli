@@ -25,4 +25,5 @@ Thumbs.db
 # Project
 .env
 vendor/
+conoha-cli
 

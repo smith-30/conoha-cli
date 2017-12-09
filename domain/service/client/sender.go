@@ -18,6 +18,9 @@ import (
 const (
 	POST = "POST"
 	GET  = "GET"
+
+	API_AUTH_HOST = "https://identity.tyo1.conoha.io/v2.0"
+	API_HOST      = "https://compute.tyo1.conoha.io/v2"
 )
 
 type (
@@ -37,16 +40,14 @@ type (
 )
 
 func NewConohaClient(l *zap.Logger) (*ConohaClient, error) {
-	aah := os.Getenv("API_AUTH_HOST")
-	authParsed, err := url.ParseRequestURI(aah)
+	authParsed, err := url.ParseRequestURI(API_AUTH_HOST)
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed to parse url: %s", aah)
+		return nil, errors.Wrapf(err, "failed to parse url: %s", API_AUTH_HOST)
 	}
 
-	ah := os.Getenv("API_HOST")
-	apiParsed, err := url.ParseRequestURI(ah)
+	apiParsed, err := url.ParseRequestURI(API_HOST)
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed to parse url: %s", ah)
+		return nil, errors.Wrapf(err, "failed to parse url: %s", API_HOST)
 	}
 
 	return &ConohaClient{

@@ -12,6 +12,10 @@ __implement__
 - boot
 - halt
 
+__how to use__
+
+https://qiita.com/smith_30/items/05f84fab4e0a4dc055fc
+
 ### Thanks
 
 https://mholt.github.io/json-to-go/
